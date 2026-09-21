@@ -45,10 +45,9 @@ def mock_payment(vendor: str, amount: float, currency: str = "USD") -> dict[str,
 def _ledger_entry(state: InvoiceState, decision_value: str, reason: str) -> None:
     """Record the run, whether or not it got as far as producing an invoice.
 
-    A failed run used to write nothing at all, which made a failure less visible than a
-    success in the one table that exists to say what happened. Now it writes a row with a
-    null invoice number and whatever went wrong, so the twelve documents that quietly
-    disappeared from a batch would have left twelve rows explaining themselves.
+    A run that fails before extraction has no invoice number, so it writes a row with a
+    null one and whatever went wrong. A failure must not be less visible than a success in
+    the one table whose job is to say what happened.
     """
     invoice = state.get("invoice")
     errors = list(state.get("errors") or [])

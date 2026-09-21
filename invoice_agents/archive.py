@@ -1,13 +1,12 @@
 """Load an archived pipeline run back into the ledger.
 
-The offline demo executes the graph for real, but with stand-ins where the model would
-be, so the rationales it writes are a scoring table's rather than a model's. They read
-the same. Somebody browsing the console has no way to tell which they are looking at --
-which is exactly the mistake this module exists to stop.
+The offline demo executes the graph for real, but with stand-ins where the model would be,
+so the rationales it writes are a scoring table's rather than a model's -- and the two read
+alike.
 
 Replaying an archived live run puts genuine model reasoning in front of a reader without
-spending an API call, and every restored row is stamped with the backend that produced it
-so the console can say so.
+spending an API call. Every restored row is stamped with the backend that produced it, so
+the console can say which is on screen.
 """
 
 from __future__ import annotations

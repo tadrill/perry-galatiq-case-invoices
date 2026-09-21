@@ -90,9 +90,8 @@ the outcome. The two runs disagree for exactly this reason: **6/15/4** live agai
 **7/16/2** offline.
 
 Because the two read alike on the page, every ledger row records which backend wrote it and
-the console shows it as a badge — `grok-4.6` or `OFFLINE`. That column exists because its
-absence genuinely misled someone during development: an offline demo overwrote a live run,
-and the scoring table's rationales were mistaken for the model's.
+the console shows it as a badge — `grok-4.6` or `OFFLINE`. A rationale carries no other
+clue as to who wrote it.
 
 Three ways to fill the ledger, none of which leaves it ambiguous:
 
@@ -103,7 +102,7 @@ python scripts/demo.py --live       # execute the pipeline now against the API
 ```
 
 `demo.py` refuses to overwrite a ledger holding anything but its own offline output unless
-you pass `--force`. That guard exists for the same reason the badge does.
+you pass `--force`; a live run costs 40 minutes and real quota.
 
 Going live needs a key and patience — roughly 90 seconds per invoice:
 

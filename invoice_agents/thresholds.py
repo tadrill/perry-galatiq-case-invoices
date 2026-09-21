@@ -1,14 +1,9 @@
-"""Every tunable number in the pipeline, in one place.
-
-These were scattered across nine modules, which is fine for a developer reading the code
-and useless to anyone asking "what would we change to raise the approval limit?" They are
-grouped below by who would plausibly want to move them.
+"""Every tunable number in the pipeline, grouped by who would want to move it.
 
 Nothing here is read from the environment, deliberately. These are policy, not deployment
 configuration: changing one changes what the system decides about somebody's money, so it
-should go through review like any other code change rather than being set by whoever last
-edited a `.env` file. Values that genuinely are environment-dependent -- API keys, model
-ids, file paths -- live in `config.py`.
+belongs in review like any other code change. Values that genuinely are
+environment-dependent -- API keys, model ids, file paths -- live in `config.py`.
 """
 
 from __future__ import annotations
