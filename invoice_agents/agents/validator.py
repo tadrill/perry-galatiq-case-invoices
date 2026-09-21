@@ -51,12 +51,7 @@ from .mock_validation import mock_validate
 
 NODE = "validator"
 
-#: Tool-calling rounds before the agent is cut off. Four tools and a handful of
-#: unresolved names; anything beyond this is a loop, not an investigation.
-MAX_TOOL_ITERATIONS = 5
-
-
-
+from ..thresholds import MAX_TOOL_ITERATIONS
 
 SYSTEM_PROMPT = """\
 You are an accounts-payable validation specialist at a manufacturing firm.

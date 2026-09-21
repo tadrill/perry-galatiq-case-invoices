@@ -35,9 +35,7 @@ from .mock_extraction import mock_extract
 
 NODE = "extractor"
 
-#: Repairs of malformed model output, inside a single node run.
-MAX_REPAIRS = 2
-
+from ..thresholds import MAX_REPAIRS
 
 SYSTEM_PROMPT = """\
 You are an invoice transcription specialist. You convert invoice documents into \

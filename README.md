@@ -127,7 +127,7 @@ python scripts/init_db.py --reset     # rebuild the database alone
 python scripts/serve.py               # console alone, against whatever is in the db
 python scripts/record_fixtures.py     # record extractions for new invoices (needs a key)
 
-pytest                                # 254 tests, ~12s, no network
+pytest                                # 256 tests, ~12s, no network
 ruff check .
 ```
 
@@ -522,7 +522,7 @@ The seed data is chosen to make validation a real job rather than a lookup:
 
 ## Testing
 
-**254 tests, ~12s, no network.** The tests use the real invoice strings from `data/invoices/`, not invented ones — those are
+**256 tests, ~12s, no network.** The tests use the real invoice strings from `data/invoices/`, not invented ones — those are
 what the pipeline actually has to survive. Coverage includes the arithmetic edge cases, the
 fuzzy-matching boundaries, both retry loops terminating, the policy floor, graceful
 degradation when a model call fails, and the state reducers against a compiled LangGraph.
@@ -545,6 +545,7 @@ invoice_agents/
   reconciliation.py          deterministic arithmetic
   validation.py              deterministic checks
   policy.py                  the approval floor
+  thresholds.py              every tunable number, in one file
   payment.py                 mock banking API, ledger write
   tools.py                   LangChain tools over the database
   llm.py                     Grok / offline backend selection
@@ -563,6 +564,21 @@ scripts/
 
 Configuration is environment-driven (`.env`); `GROK_MODEL` defaults to `grok-4.6` against
 `https://api.x.ai/v1`.
+
+---
+
+## Tuning it
+
+Every number that changes what the system decides lives in
+[`invoice_agents/thresholds.py`](invoice_agents/thresholds.py) — the $10,000 scrutiny
+threshold, the price and date tolerances, what counts as an implausible tax rate, the
+fuzzy-match floor, and every loop bound. Each carries a comment explaining what moving it
+costs, and a test fails if any module redefines one locally.
+
+They are code rather than environment variables on purpose. Changing one changes what the
+system decides about somebody's money, so it should go through review like any other
+change rather than being set by whoever last edited a `.env`. Genuine deployment settings —
+API key, model id, paths — live in `config.py` and are read from the environment.
 
 ---
 

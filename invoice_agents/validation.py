@@ -32,13 +32,7 @@ from .inventory import (
     lookup_vendor,
 )
 from .schemas import Finding, InvoiceData, ReconciliationResult, Severity
-
-#: Unit prices may drift this far from catalog before it is worth a human's attention.
-#: INV-1013's volume discounts sit at -4%; INV-1010's rush line at +20%.
-PRICE_TOLERANCE = 0.10
-
-#: "Net 30" rarely means exactly 30 days to the vendor's billing system.
-DUE_DATE_TOLERANCE_DAYS = 5
+from .thresholds import DUE_DATE_TOLERANCE_DAYS, PRICE_TOLERANCE
 
 _NET_TERMS = re.compile(r"net\s*(\d+)", re.IGNORECASE)
 

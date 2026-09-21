@@ -44,24 +44,12 @@ NODE = "reconciler"
 
 CENTS = Decimal("0.01")
 
-#: Vendors round tax differently; a cent of drift is not a discrepancy.
-MONEY_TOLERANCE = Decimal("0.01")
-
-#: Total extractor passes allowed. One initial read plus one re-read after a mismatch --
-#: enough to tell a misread from an inconsistent document, and no more. INV-1009 can
-#: never reconcile, so an unbounded loop would spin on it forever.
-MAX_EXTRACTION_ATTEMPTS = 2
-
-#: Sales tax above this is not a rate anyone charges on industrial parts. Set well clear
-#: of the highest legitimate rate in the sample set (10%) so ordinary invoices never trip
-#: it, and low enough to catch a padded tax line dressed up as a statutory charge.
-MAX_PLAUSIBLE_TAX_RATE = Decimal("0.25")
-
-#: Freight above this share of the goods is worth a look. Shipping is the classic place to
-#: hide an inflated charge, because nothing downstream validates it against a catalog the
-#: way a line item gets validated against stock.
-MAX_SHIPPING_RATIO = Decimal("0.25")
-
+from .thresholds import (
+    MAX_EXTRACTION_ATTEMPTS,
+    MAX_PLAUSIBLE_TAX_RATE,
+    MAX_SHIPPING_RATIO,
+    MONEY_TOLERANCE,
+)
 
 # ---------------------------------------------------------------------------
 # Decimal helpers

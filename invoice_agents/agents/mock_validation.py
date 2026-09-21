@@ -31,11 +31,7 @@ from ..schemas import (
     ValidationVerdict,
     VendorAdjudication,
 )
-
-#: Above this, the offline stand-in calls a near miss a misspelling. "QuickShip
-#: Distributers" scores 0.952 against the approved spelling; "WidgetC" scores 0.857
-#: against WidgetA, which lands below and is therefore reported as not-a-match.
-RESOLUTION_THRESHOLD = 0.90
+from ..thresholds import MOCK_RESOLUTION_THRESHOLD as RESOLUTION_THRESHOLD
 
 #: Phrases that pressure a clerk into paying without checking.
 PRESSURE_PHRASES = (

@@ -24,9 +24,7 @@ from .state import InvoiceState, log
 
 NODE = "payment"
 
-#: Rationales are the record a human acts on, so they are stored whole. The cap only
-#: exists to stop a pathological model response from bloating the ledger.
-MAX_REASON_CHARS = 4000
+from .thresholds import MAX_REASON_CHARS
 
 
 def mock_payment(vendor: str, amount: float, currency: str = "USD") -> dict[str, Any]:

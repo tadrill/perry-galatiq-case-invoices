@@ -15,8 +15,7 @@ from pathlib import Path
 
 SUPPORTED_SUFFIXES = frozenset({".txt", ".json", ".csv", ".xml", ".pdf"})
 
-#: Guard against a pathological file exhausting the context window.
-MAX_CHARS = 100_000
+from ..thresholds import MAX_DOCUMENT_CHARS as MAX_CHARS
 
 
 class DocumentLoadError(RuntimeError):

@@ -635,3 +635,50 @@ def test_provenance_of_a_pre_tracking_ledger_is_unknown_not_absent(tmp_path, mon
     raw.close()
 
     assert ledger_provenance(db) == {"unknown": 1}
+
+
+# ---------------------------------------------------------------------------
+# Tunables live in one file
+# ---------------------------------------------------------------------------
+
+
+def test_no_module_redefines_a_tunable():
+    """Every number that changes behaviour has exactly one definition.
+
+    Re-declaring one locally would leave the two copies to drift, and the copy someone
+    edits would not be the one the pipeline reads.
+    """
+    import re
+    from pathlib import Path
+
+    from invoice_agents import thresholds
+
+    names = {n for n in vars(thresholds) if n.isupper() and not n.startswith("_")}
+    assert len(names) >= 15, "expected the tunables to be collected here"
+
+    package = Path(thresholds.__file__).parent
+    offenders = []
+    for path in package.rglob("*.py"):
+        if path.name == "thresholds.py":
+            continue
+        for line in path.read_text(encoding="utf-8").splitlines():
+            match = re.match(r"^([A-Z_]+)\s*(?::[^=]+)?=", line)
+            if match and match.group(1) in names:
+                offenders.append(f"{path.name}: {line.strip()}")
+
+    assert not offenders, f"tunables redefined outside thresholds.py: {offenders}"
+
+
+def test_consumers_read_the_shared_values():
+    from invoice_agents import thresholds
+    from invoice_agents.agents.approver import MAX_CRITIQUE_ROUNDS as approver_rounds
+    from invoice_agents.graph import RECURSION_LIMIT as graph_limit
+    from invoice_agents.inventory.repository import CANDIDATE_FLOOR as repo_floor
+    from invoice_agents.policy import SCRUTINY_THRESHOLD as policy_threshold
+    from invoice_agents.reconciliation import MONEY_TOLERANCE as recon_tolerance
+
+    assert policy_threshold == thresholds.SCRUTINY_THRESHOLD
+    assert recon_tolerance == thresholds.MONEY_TOLERANCE
+    assert repo_floor == thresholds.CANDIDATE_FLOOR
+    assert approver_rounds == thresholds.MAX_CRITIQUE_ROUNDS
+    assert graph_limit == thresholds.RECURSION_LIMIT

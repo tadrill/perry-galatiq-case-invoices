@@ -24,20 +24,8 @@ from langchain_core.messages import BaseMessage
 
 from ..policy import SCRUTINY_THRESHOLD
 from ..schemas import ApprovalDecision, Critique, Decision, Severity
-
-#: How much each finding contributes to "this is fraud, not a mix-up". Reaching
-#: CONCLUSIVE_SCORE is what separates a rejection from a referral to a human.
-FRAUD_WEIGHTS: dict[str, int] = {
-    "vendor.unapproved": 2,
-    "vendor.blocked": 2,
-    "stock.discontinued": 2,
-    "duplicate.resubmission": 2,
-    "duplicate.same_content": 2,
-    "catalog.unknown_item": 1,
-    "vendor.missing": 1,
-}
-
-CONCLUSIVE_SCORE = 3
+from ..thresholds import MOCK_CONCLUSIVE_SCORE as CONCLUSIVE_SCORE
+from ..thresholds import MOCK_FRAUD_WEIGHTS as FRAUD_WEIGHTS
 
 _FINDING_RE = re.compile(r"^\s*\[(CRITICAL|WARNING|INFO)\]\s+(\S+?):", re.MULTILINE)
 _TOTAL_RE = re.compile(r"^\s*total:\s+([\d,]+\.\d{2})\s+([A-Z]{3})", re.MULTILINE)

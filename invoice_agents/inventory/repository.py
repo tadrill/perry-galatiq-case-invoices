@@ -20,14 +20,9 @@ from dataclasses import asdict, dataclass, field
 from difflib import SequenceMatcher
 from typing import Any
 
+from ..thresholds import CANDIDATE_FLOOR, CANDIDATE_LIMIT
 from .database import utcnow
 from .naming import normalize_item, normalize_vendor
-
-#: Candidates scoring below this are noise and are not shown to the agent.
-CANDIDATE_FLOOR = 0.55
-
-#: Default number of near misses returned alongside a failed exact match.
-CANDIDATE_LIMIT = 3
 
 
 @dataclass(frozen=True)

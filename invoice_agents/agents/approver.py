@@ -38,11 +38,7 @@ from .mock_approval import mock_approve
 NODE = "approver"
 CRITIQUE_NODE = "critic"
 
-#: Critique passes allowed. Two means the draft gets reviewed, may be revised once, and
-#: the revision gets reviewed -- after which the loop ends whether or not the critic is
-#: still unhappy. A critic is always able to find one more thing to say.
-MAX_CRITIQUE_ROUNDS = 2
-
+from ..thresholds import MAX_CRITIQUE_ROUNDS
 
 SYSTEM_PROMPT = f"""\
 You are a VP of Finance at a manufacturing firm, deciding whether an invoice is paid.

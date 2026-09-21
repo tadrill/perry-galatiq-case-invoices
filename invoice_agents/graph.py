@@ -41,10 +41,7 @@ from .agents.validator import validate_node
 from .payment import finalize_node
 from .reconciliation import reconcile_node, route_after_reconciliation
 from .state import InvoiceState, initial_state
-
-#: Hard ceiling on node executions, independent of the per-loop counters. A backstop
-#: against a routing bug turning into a hang, not part of the intended control flow.
-RECURSION_LIMIT = 40
+from .thresholds import RECURSION_LIMIT
 
 
 def build_graph() -> Any:

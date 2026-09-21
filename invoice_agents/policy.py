@@ -14,9 +14,17 @@ overruled into paying.
 from __future__ import annotations
 
 from .schemas import ApprovalDecision, Decision, Finding, InvoiceData, Severity
+from .thresholds import SCRUTINY_THRESHOLD
 
-#: Above this, an invoice needs a human's attention rather than an automatic release.
-SCRUTINY_THRESHOLD = 10_000.0
+__all__ = [
+    "SCRUTINY_THRESHOLD",
+    "apply_floor",
+    "critical_findings",
+    "exceeds_threshold",
+    "policy_flags",
+    "verify_citations",
+    "warning_findings",
+]
 
 
 def critical_findings(findings: list[Finding]) -> list[Finding]:
