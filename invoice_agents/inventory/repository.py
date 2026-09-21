@@ -108,6 +108,7 @@ class LedgerEntry:
     source_path: str | None
     decision: str | None
     reason: str | None
+    llm_mode: str | None
     processed_at: str
 
     def to_dict(self) -> dict[str, Any]:
@@ -283,14 +284,15 @@ def record_invoice(
     source_path: str | None = None,
     decision: str | None = None,
     reason: str | None = None,
+    llm_mode: str | None = None,
 ) -> int:
     """Append this run's outcome to the ledger. Returns the new row id."""
     cursor = conn.execute(
         """
         INSERT INTO invoice_ledger
             (invoice_number, revision, vendor_name, total, currency,
-             line_hash, source_path, decision, reason, processed_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+             line_hash, source_path, decision, reason, llm_mode, processed_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
         (
             invoice_number,
@@ -302,6 +304,7 @@ def record_invoice(
             source_path,
             decision,
             reason,
+            llm_mode,
             utcnow(),
         ),
     )

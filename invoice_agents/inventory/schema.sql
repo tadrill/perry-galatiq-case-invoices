@@ -61,6 +61,10 @@ CREATE TABLE IF NOT EXISTS invoice_ledger (
     source_path    TEXT,
     decision       TEXT CHECK (decision IN ('approved', 'rejected', 'needs_review', 'error')),
     reason         TEXT,
+    -- Which backend produced this decision: the model, or the offline stand-in. Without
+    -- it the two are indistinguishable when reading a rationale back, and a replayed
+    -- scoring table reads exactly like considered judgment.
+    llm_mode       TEXT,
     processed_at   TEXT NOT NULL
 );
 

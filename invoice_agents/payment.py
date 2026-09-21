@@ -54,6 +54,7 @@ def _ledger_entry(state: InvoiceState, decision_value: str, reason: str) -> None
     """
     invoice = state.get("invoice")
     errors = list(state.get("errors") or [])
+    backend = get_settings().llm_mode
 
     if invoice is None:
         detail = " | ".join(errors) or reason
@@ -64,6 +65,7 @@ def _ledger_entry(state: InvoiceState, decision_value: str, reason: str) -> None
                 source_path=state.get("source_path"),
                 decision="error",
                 reason=detail[:MAX_REASON_CHARS],
+                llm_mode=backend,
             )
         return
 
@@ -85,6 +87,7 @@ def _ledger_entry(state: InvoiceState, decision_value: str, reason: str) -> None
             source_path=state.get("source_path"),
             decision=decision_value,
             reason=detail[:MAX_REASON_CHARS],
+            llm_mode=backend,
         )
 
 

@@ -29,6 +29,15 @@ const DECISION = {
 
 const SEVERITY = { critical: "✗", warning: "!", info: "·" };
 
+/* Whether a rationale came from the model or the offline stand-in. They read alike, so
+   the console says which rather than leaving a reader to assume. */
+const provenance = (mode) =>
+  !mode
+    ? ""
+    : mode === "mock"
+      ? `<span class="badge info" title="written by the offline stand-in, not a model">OFFLINE</span>`
+      : `<span class="badge accent" title="written by the model">${esc(mode)}</span>`;
+
 let inbox = [];
 let selected = null;
 
@@ -195,10 +204,14 @@ function priorRun(meta) {
           <span class="word">${d.word}</span>
           ${meta.invoice_number ? `<span class="badge info">${esc(meta.invoice_number)}</span>` : ""}
           ${meta.total != null ? `<span class="badge info">${esc(money(meta.total, meta.currency))}</span>` : ""}
+          ${provenance(meta.llm_mode)}
         </div>
         <pre class="rationale ${d.cls}">${esc(meta.reason || "(no reasoning recorded)")}</pre>
         <div class="dim" style="margin-top:8px;font-size:11px">
-          Recorded reasoning from the ledger. Run again for the full findings and audit trail.
+          ${meta.llm_mode && meta.llm_mode !== "mock"
+            ? `Reasoning written by <b>${esc(meta.llm_mode)}</b>.`
+            : `Reasoning written by the offline stand-in, not a model.`}
+          Run again for the full findings and audit trail.
         </div>
       </div>
     </div>`;
@@ -421,7 +434,7 @@ async function loadVendors() {
 
 async function loadLedger() {
   const rows = await api("/api/ledger").catch((e) => e);
-  if (rows instanceof Error) return fail("#ledger-body", 7, rows);
+  if (rows instanceof Error) return fail("#ledger-body", 8, rows);
 
   $("#ledger-body").innerHTML = rows.length
     ? rows
@@ -437,6 +450,7 @@ async function loadLedger() {
             <td class="dim">${esc(r.vendor_name || "—")}</td>
             <td class="num">${esc(money(r.total, r.currency))}</td>
             <td><span class="badge ${d.cls}">${esc(d.word)}</span></td>
+            <td>${provenance(r.llm_mode)}</td>
             <td class="dim" style="font-size:10px">${
               r.decision === "error"
                 ? `<span style="color:var(--red)">${esc((r.reason || "").slice(0, 70))}</span>`
@@ -445,13 +459,13 @@ async function loadLedger() {
             <td class="dim nowrap">${esc(r.processed_at)}</td>
           </tr>
           <tr class="reason-row" hidden data-reason-for="${r.id}">
-            <td colspan="7">
+            <td colspan="8">
               <pre class="rationale ${d.cls}">${esc(r.reason || "(no reasoning recorded)")}</pre>
             </td>
           </tr>`;
         })
         .join("")
-    : `<tr><td colspan="7" class="dim">nothing processed yet — run an invoice from the inbox</td></tr>`;
+    : `<tr><td colspan="8" class="dim">nothing processed yet — run an invoice from the inbox</td></tr>`;
 }
 
 $("#ledger-body").addEventListener("click", (e) => {

@@ -226,3 +226,25 @@ def test_long_rationales_are_stored_whole(tmp_path, monkeypatch):
     assert len(stored) == len(long_rationale)
     assert MAX_REASON_CHARS > 500
     get_settings.cache_clear()
+
+
+# ---------------------------------------------------------------------------
+# Provenance: which backend wrote this rationale
+# ---------------------------------------------------------------------------
+
+
+def test_a_decision_records_which_backend_produced_it(client):
+    """A stand-in's rationale reads exactly like a model's. The only way to tell them
+    apart is to record it at the time."""
+    client.post("/api/invoices/invoice_1003.txt/process")
+
+    row = next(
+        r for r in client.get("/api/invoices").json() if r["filename"] == "invoice_1003.txt"
+    )
+    assert row["llm_mode"] == "mock"
+    assert client.get("/api/ledger").json()[0]["llm_mode"] == "mock"
+
+
+def test_overview_summarizes_ledger_provenance(client):
+    client.post("/api/invoices/invoice_1001.txt/process")
+    assert client.get("/api/overview").json()["provenance"] == {"mock": 1}

@@ -16,6 +16,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
+from ..archive import ledger_provenance
 from ..config import get_settings
 from ..graph import build_graph, process_invoice
 from ..ingestion import SUPPORTED_SUFFIXES, DocumentLoadError, load_document
@@ -127,6 +128,7 @@ def overview() -> dict[str, Any]:
             " (SELECT COUNT(*) FROM invoice_ledger) AS processed"
         )[0]
         stats.update(counts)
+        stats["provenance"] = ledger_provenance()
         stats["decisions"] = {
             row["decision"] or "unknown": row["n"]
             for row in _rows(
@@ -161,6 +163,7 @@ def invoices() -> list[dict[str, Any]]:
                 "currency": last["currency"] if last else None,
                 "decision": last["decision"] if last else None,
                 "reason": last["reason"] if last else None,
+                "llm_mode": last["llm_mode"] if last else None,
                 "revision": last["revision"] if last else None,
                 "processed_at": last["processed_at"] if last else None,
             }

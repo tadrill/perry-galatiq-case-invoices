@@ -560,3 +560,78 @@ def test_errors_during_a_successful_run_reach_the_ledger(env):
         row = find_prior_invoices(conn, "INV-TEST")[0]
 
     assert "TimeoutError" in row.reason
+
+
+# ---------------------------------------------------------------------------
+# Archived runs
+# ---------------------------------------------------------------------------
+
+
+def test_an_archived_run_replays_into_the_ledger(env, tmp_path):
+    """Replaying a recorded live run puts the model's own reasoning in front of a reader
+    without spending an API call."""
+    import json
+
+    from invoice_agents.archive import ledger_provenance, restore
+
+    archive = tmp_path / "run.json"
+    archive.write_text(
+        json.dumps(
+            {
+                "model": "grok-4.6",
+                "ledger": [
+                    {
+                        "invoice_number": "INV-1003",
+                        "vendor_name": "Fraudster LLC",
+                        "total": 100000.0,
+                        "currency": "USD",
+                        "decision": "rejected",
+                        "reason": "Corroborating fraud indicators.",
+                        "source_file": "invoice_1003.txt",
+                        "processed_at": "2026-09-21T02:40:37+00:00",
+                        "revision": None,
+                        "line_hash": "abc123",
+                    }
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    meta = restore(archive, db_path=env)
+
+    assert meta["restored"] == 1
+    assert ledger_provenance(env) == {"grok-4.6": 1}
+    with connect(env) as conn:
+        row = find_prior_invoices(conn, "INV-1003")[0]
+    assert row.decision == "rejected"
+    assert row.llm_mode == "grok-4.6"
+    assert row.processed_at == "2026-09-21T02:40:37+00:00"
+
+
+def test_a_missing_archive_is_reported_clearly(tmp_path):
+    from invoice_agents.archive import ArchiveError, load_archive
+
+    with pytest.raises(ArchiveError, match="No archived run"):
+        load_archive(tmp_path / "absent.json")
+
+
+def test_provenance_of_a_pre_tracking_ledger_is_unknown_not_absent(tmp_path, monkeypatch):
+    """An older database has no llm_mode column. Reporting its rows as 'unknown' rather
+    than 'none' is what stops the demo from silently overwriting a live run."""
+    import sqlite3
+
+    from invoice_agents.archive import ledger_provenance
+
+    db = tmp_path / "old.db"
+    initialize(db, reset=True)
+    raw = sqlite3.connect(db)
+    raw.execute("ALTER TABLE invoice_ledger DROP COLUMN llm_mode")
+    raw.execute(
+        "INSERT INTO invoice_ledger (invoice_number, decision, processed_at) "
+        "VALUES ('INV-OLD', 'approved', '2026-01-01')"
+    )
+    raw.commit()
+    raw.close()
+
+    assert ledger_provenance(db) == {"unknown": 1}

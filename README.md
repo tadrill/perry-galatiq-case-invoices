@@ -37,9 +37,20 @@ python scripts/demo.py --serve
 
 Then open **http://127.0.0.1:8000**.
 
-That one command builds the inventory database, runs all 25 sample invoices through the
-full pipeline, records every decision with its reasoning, and opens a web console over the
-results. It takes a couple of seconds and touches the network not at all.
+That builds the inventory database, runs all 25 sample invoices through the full pipeline,
+records every decision with its reasoning, and opens a web console over the results. A
+couple of seconds, no network.
+
+**To read what the model itself decided**, replay a recorded live run instead:
+
+```bash
+python scripts/demo.py --archived --serve
+```
+
+Same console, but the ledger is loaded from `data/runs/grok-4.6-full-run.json` — 25
+invoices, every rationale `grok-4.6` actually wrote, captured during a 49-minute live run.
+No API calls either way. Each decision in the console is badged with the backend that
+produced it, so there is never a question which you are reading.
 
 Requires Python 3.11+ (developed on 3.14). If `python3` is not on your path, use `python`.
 
@@ -73,23 +84,32 @@ stage by stage:
 So offline is the real model reading the documents and Python doing the judging. It reaches
 the right verdict on every sample invoice, but a threshold is not what the model is doing —
 it weighs findings against each other and writes a rationale, and the stand-in only imitates
-the outcome. The two runs disagree slightly for exactly this reason: 6/15/4 live against
-7/16/2 offline.
+the outcome. The two runs disagree for exactly this reason: **6/15/4** live against
+**7/16/2** offline.
 
-If you want to see the model's own reasoning, read
-`data/runs/grok-4.6-full-run.json` (below) or run with `--live`.
+Because the two read alike on the page, every ledger row records which backend wrote it and
+the console shows it as a badge — `grok-4.6` or `OFFLINE`. That column exists because its
+absence genuinely misled someone during development: an offline demo overwrote a live run,
+and the scoring table's rationales were mistaken for the model's.
 
-To use the live API instead, put a key in `.env` and add `--live`:
+Three ways to fill the ledger, none of which leaves it ambiguous:
+
+```bash
+python scripts/demo.py              # execute the pipeline now, offline stand-ins
+python scripts/demo.py --archived   # replay the recorded live run, real model rationales
+python scripts/demo.py --live       # execute the pipeline now against the API
+```
+
+`demo.py` refuses to overwrite a ledger holding anything but its own offline output unless
+you pass `--force`. That guard exists for the same reason the badge does.
+
+Going live needs a key and patience — roughly 90 seconds per invoice:
 
 ```bash
 cp .env.example .env        # add XAI_API_KEY
-python scripts/check_llm.py # confirm the model answers
+python scripts/check_llm.py # confirm the model answers before spending 40 minutes
 python scripts/demo.py --live --serve
 ```
-
-Live runs take roughly 90 seconds per invoice. `data/runs/grok-4.6-full-run.json` is an
-archived full live run — 25 invoices, every rationale the model actually produced — kept so
-the real-model behaviour is inspectable without spending an API key.
 
 ### Everything else
 
@@ -100,11 +120,12 @@ python main.py --invoice_path=... -v                            # full audit tra
 python main.py --invoice_path=... --json                        # pipeable output
 python main.py --all --reset-ledger                             # forget processing history
 
+python scripts/demo.py --archived     # replay the recorded live run into the ledger
 python scripts/init_db.py --reset     # rebuild the database alone
 python scripts/serve.py               # console alone, against whatever is in the db
 python scripts/record_fixtures.py     # record extractions for new invoices (needs a key)
 
-pytest                                # 249 tests, ~11s, no network
+pytest                                # 254 tests, ~12s, no network
 ruff check .
 ```
 
@@ -478,7 +499,7 @@ The seed data is chosen to make validation a real job rather than a lookup:
 
 ## Testing
 
-**249 tests, ~11s, no network.** The tests use the real invoice strings from `data/invoices/`, not invented ones — those are
+**254 tests, ~12s, no network.** The tests use the real invoice strings from `data/invoices/`, not invented ones — those are
 what the pipeline actually has to survive. Coverage includes the arithmetic edge cases, the
 fuzzy-matching boundaries, both retry loops terminating, the policy floor, graceful
 degradation when a model call fails, and the state reducers against a compiled LangGraph.
