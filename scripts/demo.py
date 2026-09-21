@@ -22,7 +22,12 @@ from rich.box import ROUNDED
 from rich.rule import Rule
 from rich.table import Table
 
-from invoice_agents.archive import ArchiveError, ledger_provenance, restore
+from invoice_agents.archive import (
+    ArchiveError,
+    ledger_provenance,
+    load_archive,
+    restore,
+)
 from invoice_agents.config import get_settings
 from invoice_agents.console import FAIL, OK, WARN, console
 from invoice_agents.graph import build_graph, process_invoice
@@ -76,6 +81,16 @@ def main() -> int:
     # say what is about to be lost rather than discovering it afterwards.
     existing = ledger_provenance(settings.resolved_db_path)
     at_risk = {mode: n for mode, n in existing.items() if mode != "mock"}
+
+    # Re-loading the archive over the archive it already holds replaces the rows with
+    # identical ones, so there is nothing to protect and the guard would only nag.
+    if args.archived and at_risk:
+        try:
+            if set(at_risk) == {load_archive().get("model")}:
+                at_risk = {}
+        except ArchiveError:
+            pass
+
     if at_risk and not args.force:
         unknown_only = set(at_risk) == {"unknown"}
         origin = (
