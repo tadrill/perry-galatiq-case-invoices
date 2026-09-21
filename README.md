@@ -483,8 +483,29 @@ inventory       item, stock, unit_price, currency, category, status, notes, norm
 vendors         name, status (approved|unverified|blocked), payment_terms, currency,
                 also_known_as, notes
 invoice_ledger  invoice_number, revision, vendor_name, total, currency, line_hash,
-                source_path, decision, reason, processed_at
+                source_path, decision, reason, llm_mode, processed_at
 ```
+
+### What `stock` is standing in for
+
+Worth naming before anything else, because it is the one place this model is deliberately
+wrong. Checking an **inbound** invoice against **our** stock level conflates two different
+questions:
+
+- *Did we order this much?* — a purchase-order match
+- *Do we have it on hand?* — inventory
+
+A vendor billing 20 GadgetX when the shelf holds 5 might be over-billing, or might simply
+have shipped 20 that nobody has booked in yet. Only the first is an accounts-payable
+problem, and stock cannot tell them apart.
+
+A real system matches the invoice line against the PO line — ordered quantity, agreed
+price, receipt confirmation — and `stock` is a one-column stand-in for that table because
+the brief supplies it and a PO table would have been invention. Every stock finding should
+be read as *"this quantity is unexpected, check the order"* rather than *"we are short."*
+Swapping in a `purchase_orders` table is the single change that would most improve the
+validator's precision, and nothing else in the design would have to move: the aggregation,
+the per-SKU matching and the finding vocabulary all carry over unchanged.
 
 The seed data is chosen to make validation a real job rather than a lookup:
 
@@ -553,9 +574,13 @@ price comparison is skipped rather than guessed at.
 **No OCR.** `pdfplumber` reads embedded text. A scanned image would fail loudly with a
 message saying so.
 
+**Stock stands in for a purchase order.** Covered above — an inbound invoice is really
+being matched against what was ordered, and `inventory.stock` is a one-column
+approximation of that. It is the largest deliberate simplification in the design.
+
 **The ledger is the only memory.** There's no vendor payment history, so "this vendor has
-never billed above $500 before" isn't a signal the system can raise yet. That's the first
-thing I'd add — it's where the remaining fraud catches live.
+never billed above $500 before" isn't a signal the system can raise yet. That, and the
+purchase-order table, are where the remaining fraud catches live.
 
 **Single-invoice runs.** `--all` iterates sequentially. Invoices are independent, so this
 parallelizes cleanly, but there was no reason to build that for 25 files.
