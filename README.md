@@ -58,10 +58,26 @@ a typo but isn't).
 
 ### Offline replay, and running it for real
 
-The demo uses recorded `grok-4.6` extractions rather than calling the API, so it runs with
-no key and no network — the brief assumes no internet, and a prototype the recipient can't
-actually start isn't a prototype. Everything else executes for real: the arithmetic, the
-database checks, the policy engine, the payment call.
+The demo runs with no key and no network — the brief assumes no internet, and a prototype
+the recipient can't actually start isn't a prototype. Be precise about what that costs,
+stage by stage:
+
+| Stage | Offline | Live |
+|---|---|---|
+| **extract** | replays real `grok-4.6` output recorded per document | model call |
+| **reconcile** | real — pure Python either way | same |
+| **validate** | deterministic checks are real; the *adjudication* falls back to a similarity threshold | model call with tools |
+| **approve / critique** | a fraud-scoring table stands in for the judgment | model calls |
+| **policy, payment, ledger** | real — Python either way | same |
+
+So offline is the real model reading the documents and Python doing the judging. It reaches
+the right verdict on every sample invoice, but a threshold is not what the model is doing —
+it weighs findings against each other and writes a rationale, and the stand-in only imitates
+the outcome. The two runs disagree slightly for exactly this reason: 6/15/4 live against
+7/16/2 offline.
+
+If you want to see the model's own reasoning, read
+`data/runs/grok-4.6-full-run.json` (below) or run with `--live`.
 
 To use the live API instead, put a key in `.env` and add `--live`:
 
@@ -133,6 +149,65 @@ Findings (4, 3 critical)
 Note the arithmetic on that invoice is impeccable. 100 × $1,000 really is $100,000. The
 fraud is everywhere except the sums, which is why arithmetic and judgment are handled by
 different parts of the system.
+
+---
+
+## What this actually does for the business
+
+On the 25 supplied invoices, against the live model:
+
+| | |
+|---|---|
+| Released automatically, no human | **6** — $23,265 |
+| Refused outright | **4** — $112,650 withheld |
+| Routed to a human | **15** — $149,034 |
+
+So it pays 24% of invoices straight through and still puts 60% in front of a person.
+Stated plainly, because the number matters and the honest reading is not the obvious one.
+
+**The queue was never the expensive part. The investigation was.**
+
+A clerk facing INV-1013 today opens a 22,562.80 invoice with eight lines, three of them
+repeating SKUs at different prices, and has to work out by hand whether it adds up. It
+does not — it is $50 short — but finding that takes twenty minutes of adding, and most
+people do not do it, which is where a 30% error rate comes from. The same clerk now opens
+a queue item that already says:
+
+> `arithmetic.mismatch` — stated 22,562.80, computed 21,040.00 + 1,472.80 tax = 22,512.80
+> `stock.insufficient` — WidgetA: 22 billed against 15 in stock (short 7)
+
+with the vendor verified, the catalog matched, the duplicate ledger checked, and a written
+rationale explaining what to do about it. The decision still needs a human. The *work* does
+not. That is the five days.
+
+### What it caught that a person reading carefully would probably miss
+
+| | |
+|---|---|
+| Misstated totals, invisible by eye | **$1,410** across INV-1007, INV-1009, INV-1013 |
+| Double payment prevented | **$3,000** — INV-1011 arrived as both a PDF and a text file; the second was caught against the ledger as a duplicate of one already paid |
+| Fraud refused | **$109,900** — INV-1003 (unlisted vendor, discontinued part, wire-transfer pressure) and INV-1008 (unlisted vendor, two products that do not exist, priced $100 under the review threshold) |
+
+Three of the twenty-five supplied invoices fail their own arithmetic, and not one of them
+looks wrong. That is the case for recomputing every figure in Python rather than asking a
+model whether it adds up.
+
+### Where this goes next
+
+The 60% review queue is one undifferentiated pile, and it should not be. Every item in it
+already carries a machine-readable cause, and those causes belong to different desks — a
+stock shortfall is a buyer's phone call, an 85% tax line is a finance question, a duplicate
+is an AP check. Routing on the finding code turns one queue of fifteen into four short
+lists of pre-investigated work, and that is a small change to a field that already exists.
+
+Further out, and deliberately not built here: several of these refusals need no human at
+all. An invoice from a vendor who is not on the approved list, for a part that does not
+exist, is not a judgment call — the system already writes a rationale good enough to send.
+Auto-rejecting on corroborated criteria and emailing the vendor the reasoning would close
+the loop without a person touching it, and the audit trail to justify each one is already
+being written. The reason it stops short of that here is that releasing outbound
+communication on a model's say-so needs a confidence bar this prototype has not earned yet,
+and the failure documented below is exactly why.
 
 ---
 
