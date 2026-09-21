@@ -1,0 +1,44 @@
+{
+  "_provenance": "recorded from invoice_1007.csv via grok-4.6",
+  "_recorded_at": "2026-09-20T23:05:58+00:00",
+  "invoice_number": "INV-1007",
+  "revision": null,
+  "vendor_name": "MegaWidgets Corp",
+  "vendor_address": null,
+  "invoice_date_raw": "01/28/2026",
+  "invoice_date": "2026-01-28",
+  "due_date_raw": "02/28/2026",
+  "due_date": "2026-02-28",
+  "line_items": [
+    {
+      "item": "WidgetA",
+      "quantity": 20.0,
+      "unit_price": 250.0,
+      "amount": 5000.0,
+      "note": null
+    },
+    {
+      "item": "WidgetB",
+      "quantity": 15.0,
+      "unit_price": 500.0,
+      "amount": 7500.0,
+      "note": null
+    },
+    {
+      "item": "GadgetX",
+      "quantity": 3.0,
+      "unit_price": 750.0,
+      "amount": 2250.0,
+      "note": null
+    }
+  ],
+  "subtotal": 14750.0,
+  "tax_rate": 0.06,
+  "tax_amount": 885.0,
+  "shipping": null,
+  "total": 15525.0,
+  "currency": "USD",
+  "payment_terms": null,
+  "notes": null,
+  "unreadable_fields": []
+}

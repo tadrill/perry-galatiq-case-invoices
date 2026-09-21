@@ -1,0 +1,44 @@
+{
+  "_provenance": "recorded from invoice_1005.json via grok-4.6",
+  "_recorded_at": "2026-09-20T23:05:41+00:00",
+  "invoice_number": "INV-1005",
+  "revision": null,
+  "vendor_name": "Global Supply Chain Partners",
+  "vendor_address": "1600 Pennsylvania Ave, Washington, DC 20500",
+  "invoice_date_raw": "2026-01-18",
+  "invoice_date": "2026-01-18",
+  "due_date_raw": "2026-03-18",
+  "due_date": "2026-03-18",
+  "line_items": [
+    {
+      "item": "WidgetA",
+      "quantity": 14.0,
+      "unit_price": 250.0,
+      "amount": null,
+      "note": null
+    },
+    {
+      "item": "GadgetX",
+      "quantity": 8.0,
+      "unit_price": 750.0,
+      "amount": null,
+      "note": null
+    },
+    {
+      "item": "WidgetB",
+      "quantity": 10.0,
+      "unit_price": 500.0,
+      "amount": null,
+      "note": null
+    }
+  ],
+  "subtotal": 14500.0,
+  "tax_rate": 0.05,
+  "tax_amount": 725.0,
+  "shipping": null,
+  "total": 15225.0,
+  "currency": "USD",
+  "payment_terms": "Net 60",
+  "notes": null,
+  "unreadable_fields": []
+}

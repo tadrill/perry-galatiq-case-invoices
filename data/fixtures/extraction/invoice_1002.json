@@ -1,0 +1,24 @@
+{
+  "_provenance": "hand-transcribed from data/invoices/invoice_1002.txt",
+  "_scenario": "abbreviated/typo'd field labels; 20x GadgetX against 5 in stock; over 10K",
+  "invoice_number": "1002",
+  "revision": null,
+  "vendor_name": "Gadgets Co.",
+  "vendor_address": null,
+  "invoice_date_raw": "Jan 30 2026",
+  "invoice_date": "2026-01-30",
+  "due_date_raw": "2026-01-30",
+  "due_date": "2026-01-30",
+  "line_items": [
+    {"item": "GadgetX", "quantity": 20, "unit_price": 750.0, "amount": null, "note": null}
+  ],
+  "subtotal": null,
+  "tax_rate": null,
+  "tax_amount": null,
+  "shipping": null,
+  "total": 15000.0,
+  "currency": "USD",
+  "payment_terms": "Net 30",
+  "notes": null,
+  "unreadable_fields": []
+}

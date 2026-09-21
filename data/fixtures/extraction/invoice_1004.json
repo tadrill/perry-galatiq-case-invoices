@@ -1,0 +1,37 @@
+{
+  "_provenance": "recorded from invoice_1004.json via grok-4.6",
+  "_recorded_at": "2026-09-20T23:05:21+00:00",
+  "invoice_number": "INV-1004",
+  "revision": null,
+  "vendor_name": "Precision Parts Ltd.",
+  "vendor_address": "742 Evergreen Terrace, Springfield, IL 62704",
+  "invoice_date_raw": "2026-01-22",
+  "invoice_date": "2026-01-22",
+  "due_date_raw": "2026-02-22",
+  "due_date": "2026-02-22",
+  "line_items": [
+    {
+      "item": "WidgetA",
+      "quantity": 3.0,
+      "unit_price": 250.0,
+      "amount": null,
+      "note": null
+    },
+    {
+      "item": "WidgetB",
+      "quantity": 2.0,
+      "unit_price": 500.0,
+      "amount": null,
+      "note": null
+    }
+  ],
+  "subtotal": 1750.0,
+  "tax_rate": 0.08,
+  "tax_amount": 140.0,
+  "shipping": null,
+  "total": 1890.0,
+  "currency": "USD",
+  "payment_terms": "Net 30",
+  "notes": null,
+  "unreadable_fields": []
+}

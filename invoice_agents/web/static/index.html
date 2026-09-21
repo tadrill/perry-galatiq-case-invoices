@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Invoice Pipeline · Console</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="glyph">▚</span>
+    <span class="name">INVOICE<span class="dim">_</span>PIPELINE</span>
+    <span class="ver">v0.1.0</span>
+  </div>
+  <div class="pills" id="pills"></div>
+</header>
+
+<nav class="tabs" id="tabs">
+  <button class="tab active" data-tab="inbox"><span class="key">01</span>INBOX</button>
+  <button class="tab" data-tab="inventory"><span class="key">02</span>INVENTORY</button>
+  <button class="tab" data-tab="vendors"><span class="key">03</span>VENDORS</button>
+  <button class="tab" data-tab="ledger"><span class="key">04</span>LEDGER</button>
+</nav>
+
+<main>
+
+  <!-- ─────────────────────────────── INBOX ─────────────────────────────── -->
+  <section class="panel active" id="tab-inbox">
+    <div class="split">
+
+      <div class="pane pane-list">
+        <div class="pane-head">
+          <h2>DOCUMENTS</h2>
+          <input id="filter" class="filter" placeholder="filter…" autocomplete="off">
+        </div>
+        <div class="scroll">
+          <table class="grid" id="inbox-table">
+            <thead>
+              <tr><th>FILE</th><th>FMT</th><th class="num">TOTAL</th><th>LAST RUN</th></tr>
+            </thead>
+            <tbody id="inbox-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="pane pane-detail">
+        <div id="detail" class="empty-state">
+          <div class="empty-glyph">◲</div>
+          <p>SELECT A DOCUMENT</p>
+          <span class="dim">the inbox reads straight off disk · <span id="doc-count">—</span> files</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ───────────────────────────── INVENTORY ───────────────────────────── -->
+  <section class="panel" id="tab-inventory">
+    <div class="pane">
+      <div class="pane-head">
+        <h2>CATALOG</h2>
+        <span class="dim" id="inventory-note"></span>
+      </div>
+      <div class="scroll">
+        <table class="grid wide">
+          <thead>
+            <tr>
+              <th>SKU</th><th>NAME</th><th class="num">STOCK</th><th class="num">UNIT PRICE</th>
+              <th>CCY</th><th>CATEGORY</th><th>STATUS</th><th>NOTES</th>
+            </tr>
+          </thead>
+          <tbody id="inventory-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ────────────────────────────── VENDORS ────────────────────────────── -->
+  <section class="panel" id="tab-vendors">
+    <div class="pane">
+      <div class="pane-head">
+        <h2>APPROVED VENDORS</h2>
+        <span class="dim">absence from this list is itself a finding</span>
+      </div>
+      <div class="scroll">
+        <table class="grid wide">
+          <thead>
+            <tr>
+              <th>VENDOR</th><th>STATUS</th><th>TERMS</th><th>CCY</th>
+              <th>FORMERLY</th><th>NOTES</th>
+            </tr>
+          </thead>
+          <tbody id="vendors-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────── LEDGER ────────────────────────────── -->
+  <section class="panel" id="tab-ledger">
+    <div class="pane">
+      <div class="pane-head">
+        <h2>PROCESSING HISTORY</h2>
+        <button class="btn btn-ghost" id="clear-ledger">CLEAR HISTORY</button>
+      </div>
+      <div class="scroll">
+        <table class="grid wide">
+          <thead>
+            <tr>
+              <th class="num">#</th><th>INVOICE</th><th>VENDOR</th><th class="num">TOTAL</th>
+              <th>DECISION</th><th>HASH</th><th>PROCESSED</th>
+            </tr>
+          </thead>
+          <tbody id="ledger-body"></tbody>
+        </table>
+      </div>
+      <p class="hint">
+        Every outcome is recorded, rejections included — which is how a resubmission under a
+        fresh invoice number still collides on its content hash.
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

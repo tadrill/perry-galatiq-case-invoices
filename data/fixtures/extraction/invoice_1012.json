@@ -1,0 +1,47 @@
+{
+  "_provenance": "recorded from invoice_1012.txt via grok-4.6",
+  "_recorded_at": "2026-09-20T23:07:17+00:00",
+  "invoice_number": "INV 1012",
+  "revision": null,
+  "vendor_name": "QuickShip Distributers",
+  "vendor_address": null,
+  "invoice_date_raw": "26-Jan-2O26",
+  "invoice_date": "2026-01-26",
+  "due_date_raw": "25-Feb-2026",
+  "due_date": "2026-02-25",
+  "line_items": [
+    {
+      "item": "Widget A",
+      "quantity": 12.0,
+      "unit_price": 250.0,
+      "amount": 3000.0,
+      "note": null
+    },
+    {
+      "item": "WidgetB",
+      "quantity": 7.0,
+      "unit_price": 500.0,
+      "amount": 3500.0,
+      "note": null
+    },
+    {
+      "item": "Gadget X",
+      "quantity": 4.0,
+      "unit_price": 750.0,
+      "amount": 3000.0,
+      "note": null
+    }
+  ],
+  "subtotal": 9500.0,
+  "tax_rate": 0.05,
+  "tax_amount": 475.0,
+  "shipping": null,
+  "total": 9975.0,
+  "currency": "USD",
+  "payment_terms": "Net 30",
+  "notes": "Ref PO-20260115. Deliver to warehouse dock B. Contact Jim at ext 4421 with questions.",
+  "unreadable_fields": [
+    "invoice_date",
+    "line_items[1].amount"
+  ]
+}

@@ -1,0 +1,7 @@
+# Normalize to LF in the repository regardless of the platform it was authored on,
+# so a grader on macOS or Linux gets the same bytes a Windows checkout produced.
+* text=auto eol=lf
+
+# Binary sample documents must not be line-ending mangled.
+*.pdf binary
+*.db  binary

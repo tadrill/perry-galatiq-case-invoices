@@ -1,0 +1,24 @@
+{
+  "_provenance": "hand-transcribed from data/invoices/invoice_1003.txt",
+  "_scenario": "fraud: unknown vendor, discontinued SKU, unresolvable due date, pressure language",
+  "invoice_number": "INV-1003",
+  "revision": null,
+  "vendor_name": "Fraudster LLC",
+  "vendor_address": null,
+  "invoice_date_raw": "2026-01-20",
+  "invoice_date": "2026-01-20",
+  "due_date_raw": "yesterday",
+  "due_date": null,
+  "line_items": [
+    {"item": "FakeItem", "quantity": 100, "unit_price": 1000.0, "amount": null, "note": null}
+  ],
+  "subtotal": null,
+  "tax_rate": null,
+  "tax_amount": null,
+  "shipping": null,
+  "total": 100000.0,
+  "currency": "USD",
+  "payment_terms": "Immediate",
+  "notes": "URGENT - Pay immediately to avoid penalties!!! Wire transfer preferred.",
+  "unreadable_fields": []
+}

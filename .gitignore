@@ -1,0 +1,19 @@
+# Environment
+.env
+.venv/
+venv/
+
+# Generated database
+*.db
+*.db-journal
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# Local scratch (data/runs is committed on purpose -- it holds the archived live run)
+/logs/
+/scratch/

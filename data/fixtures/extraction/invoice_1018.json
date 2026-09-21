@@ -1,0 +1,25 @@
+{
+  "_provenance": "hand-transcribed from data/invoices/invoice_1018.csv",
+  "_scenario": "85% stated tax rate on an otherwise clean invoice from an approved vendor",
+  "invoice_number": "INV-1018",
+  "revision": null,
+  "vendor_name": "MegaWidgets Corp",
+  "vendor_address": null,
+  "invoice_date_raw": "2026-02-03",
+  "invoice_date": "2026-02-03",
+  "due_date_raw": "2026-03-05",
+  "due_date": "2026-03-05",
+  "line_items": [
+    {"item": "WidgetA", "quantity": 6, "unit_price": 250.0, "amount": 1500.0, "note": null},
+    {"item": "GadgetX", "quantity": 2, "unit_price": 750.0, "amount": 1500.0, "note": null}
+  ],
+  "subtotal": 3000.0,
+  "tax_rate": 0.85,
+  "tax_amount": 2550.0,
+  "shipping": null,
+  "total": 5550.0,
+  "currency": "USD",
+  "payment_terms": null,
+  "notes": null,
+  "unreadable_fields": []
+}

@@ -1,0 +1,51 @@
+{
+  "_provenance": "recorded from invoice_1010.txt via grok-4.6",
+  "_recorded_at": "2026-09-20T23:06:35+00:00",
+  "invoice_number": "INV-1010",
+  "revision": null,
+  "vendor_name": "Consolidated Materials Group",
+  "vendor_address": null,
+  "invoice_date_raw": "January 27, 2026",
+  "invoice_date": "2026-01-27",
+  "due_date_raw": "February 26, 2026",
+  "due_date": "2026-02-26",
+  "line_items": [
+    {
+      "item": "WidgetA",
+      "quantity": 8.0,
+      "unit_price": 250.0,
+      "amount": 2000.0,
+      "note": null
+    },
+    {
+      "item": "WidgetB",
+      "quantity": 4.0,
+      "unit_price": 500.0,
+      "amount": 2000.0,
+      "note": null
+    },
+    {
+      "item": "GadgetX",
+      "quantity": 2.0,
+      "unit_price": 750.0,
+      "amount": 1500.0,
+      "note": null
+    },
+    {
+      "item": "WidgetA (rush order)",
+      "quantity": 4.0,
+      "unit_price": 300.0,
+      "amount": 1200.0,
+      "note": null
+    }
+  ],
+  "subtotal": 6700.0,
+  "tax_rate": null,
+  "tax_amount": 335.0,
+  "shipping": 150.0,
+  "total": 7185.0,
+  "currency": "USD",
+  "payment_terms": "Net 30",
+  "notes": "Thank you for your business!",
+  "unreadable_fields": []
+}

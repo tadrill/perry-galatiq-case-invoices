@@ -1,0 +1,33 @@
+[project]
+name = "invoice-agents"
+version = "0.1.0"
+description = "Multi-agent invoice processing pipeline (LangGraph + xAI Grok)"
+requires-python = ">=3.11"
+dependencies = [
+    "langgraph>=0.2",
+    "langchain-core>=0.3",
+    "langchain-xai>=0.2",
+    "pydantic>=2.7",
+    "pydantic-settings>=2.3",
+    "python-dotenv>=1.0",
+    "rich>=13.7",
+]
+
+[project.optional-dependencies]
+parsers = ["pdfplumber>=0.11"]
+web = ["fastapi>=0.115", "uvicorn[standard]>=0.30"]
+dev = ["pytest>=8.0", "ruff>=0.6"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["invoice_agents*"]
+
+[tool.setuptools.package-data]
+"invoice_agents.inventory" = ["*.sql"]
+"invoice_agents.web" = ["static/*"]
+
+[tool.ruff]
+line-length = 100
