@@ -20,7 +20,7 @@ attempt at fraud.
 ```bash
 python3 -m venv .venv && source .venv/bin/activate
 pip install -e ".[parsers,web,dev]"
-python scripts/demo.py --serve
+python scripts/demo.py --archived --serve
 ```
 </details>
 
@@ -31,26 +31,28 @@ python scripts/demo.py --serve
 python -m venv .venv
 .venv\Scripts\Activate.ps1
 pip install -e ".[parsers,web,dev]"
-python scripts/demo.py --serve
+python scripts/demo.py --archived --serve
 ```
 </details>
 
 Then open **http://127.0.0.1:8000**.
 
-That builds the inventory database, runs all 25 sample invoices through the full pipeline,
-records every decision with its reasoning, and opens a web console over the results. A
-couple of seconds, no network.
+That loads a real, recorded `grok-4.6` run — 25 invoices, every rationale the model
+actually wrote during a 49-minute live pass — and opens a web console over it. No API key,
+no network, a couple of seconds. **This is the version to look at**: the decisions and the
+reasoning are the model's own.
 
-**To read what the model itself decided**, replay a recorded live run instead:
+To execute the pipeline yourself rather than read a recording:
 
 ```bash
-python scripts/demo.py --archived --serve
+python scripts/demo.py --serve
 ```
 
-Same console, but the ledger is loaded from `data/runs/grok-4.6-full-run.json` — 25
-invoices, every rationale `grok-4.6` actually wrote, captured during a 49-minute live run.
-No API calls either way. Each decision in the console is badged with the backend that
-produced it, so there is never a question which you are reading.
+Same 25 invoices, run live through the graph. The arithmetic, database checks, policy and
+payment all execute for real, but with no API key the two *judgment* steps fall back to
+deterministic stand-ins, so the rationales are Python's rather than the model's. Every
+decision in the console is badged `grok-4.6` or `OFFLINE`, so which you are reading is
+never in question.
 
 Requires Python 3.11+ (developed on 3.14). If `python3` is not on your path, use `python`.
 
